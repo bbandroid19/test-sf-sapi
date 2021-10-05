@@ -1,0 +1,54 @@
+#%RAML 1.0
+title: apix-salesforce-sapi
+description: To Get Account Details From Salesforce Object
+version: v1
+mediaType: application/json
+protocols: [HTTPS,HTTP]
+
+documentation:
+  - title: apix-salesforce-sapi
+    content: Welcome to the apix-salesforce-sapi. This can be used to retrive account-details from salesforce object.
+
+securitySchemes:
+  clientIdPolicy: !include /client-id-enforcement-security-scheme/client-id-enforcement-security-scheme.raml
+
+uses:
+  comLib: /common-error-responses/common-error-responses-library.raml
+
+
+traits:
+  commonHeaders: !include /common-headers-trait/common-headers-trait.raml
+
+types:
+  getAccountDetailsResponse: !include /resources/datatypes/response/account-details-get-response-dataType
+/accounts:
+  get:
+    displayName: Get Account Details
+    is: [comLib.400,comLib.401,comLib.404,comLib.405,comLib.415,comLib.422,comLib.500,comLib.503,comLib.504,commonHeaders]
+    securedBy:
+      - clientIdPolicy
+    description: Endpoint to get All Account Details 
+    responses:
+      200:
+        body:
+          application/json:
+            type: getAccountDetailsResponse[]
+            example:
+              !include /resources/examples/account-get-response-example/multiple-accounts-example.json
+  /{accountid}:
+    get:
+      displayName: Get Account Deatils By Account ID
+      is: [comLib.400,comLib.401,comLib.404,comLib.405,comLib.415,comLib.422,comLib.500,comLib.503,comLib.504,commonHeaders]
+      securedBy:
+        - clientIdPolicy
+      description: Endppoint to get Account Details By Account ID  
+      responses:
+        200:
+          body:
+            application/json:
+              type: getAccountDetailsResponse
+              example:
+                !include /resources/examples/account-get-response-example/single-account-example.json
+              
+          
+                    

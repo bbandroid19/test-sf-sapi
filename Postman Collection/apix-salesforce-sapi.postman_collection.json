@@ -1,0 +1,120 @@
+{
+	"info": {
+		"_postman_id": "a5304e8a-f6f2-4a78-9464-ede4210b6b1e",
+		"name": "apix-salesforce-sapi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Retreiving All Accounts",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-correlation-id",
+						"value": "53657",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:8082/apix-salesforce-sapi/v1/api/accounts",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"apix-salesforce-sapi",
+						"v1",
+						"api",
+						"accounts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Retreiving Account By Account-ID",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-correlation-id",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:8082/apix-salesforce-sapi/v1/api/accounts/0015g000002YSBLAA4",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"apix-salesforce-sapi",
+						"v1",
+						"api",
+						"accounts",
+						"0015g000002YSBLAA4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "readiness",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-correlation-id",
+						"value": "2324",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:8082/apix-salesforce-sapi/v1/ready",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"apix-salesforce-sapi",
+						"v1",
+						"ready"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "liveliness",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-correlation-id",
+						"value": "23134",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://localhost:8082/apix-salesforce-sapi/v1/live",
+					"protocol": "https",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"apix-salesforce-sapi",
+						"v1",
+						"live"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

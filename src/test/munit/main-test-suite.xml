@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="main-test-suite.xml" />
+	<munit:test name="main-test-suite-query-all-accounts-flowTest" doc:id="ce5e0b94-e278-4c13-acbb-c2c48f7a8fe4" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e08b8e7e-8f6f-465e-aa2e-30ed4d27233c" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Query All " attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="8a591134-bac8-4607-b129-aef5f206005d" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="salesforceConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json --- readUrl('classpath://mock_payload.dwl')]" mediaType="application/json" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to query-all-accounts-flow" doc:id="8156b252-45c2-46eb-95b6-abdf5876baf9" name="query-all-accounts-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="f29aa1a8-7276-4685-a9b1-0b7e0b512e5d" actual="#[payload]" expected="#[output application/java --- readUrl('classpath://mock_payload.dwl')]"/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-test-suite-query-account-by-id-flowTest" doc:id="6ff26da3-b0b2-46da-9f44-01c0df39f078" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e908f3ce-f7c2-4bfd-a440-e75423d62dc3" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Get Account By Account Id" attributeName="doc:name" />
+					<munit-tools:with-attribute whereValue="2c13a8db-5451-40d3-8425-609bd43c6beb" attributeName="doc:id" />
+					<munit-tools:with-attribute whereValue="salesforceConfig" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value='#[[&#10;    {&#10;        "Industry": null,&#10;        "Contacts": null,&#10;        "Id": "0015g000002YSB7AAO",&#10;        "type": "Account",&#10;        "AnnualRevenue": null,&#10;        "Name": "Pathang",&#10;        "AccountNumber": null&#10;    }&#10;]]' />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Event" doc:id="3757961c-932c-4777-9b64-9bb42be2fb49" >
+				<munit:attributes value='#[{"uriParams":{"account-id":"0015g000002YSB7AAO"}}]' />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to query-account-by-id-flow" doc:id="43e4345b-3fda-4937-940e-ec8f7db29574" name="query-account-by-id-flow"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="39a61916-9de7-4a6f-a2c0-56beb8b5ee12" actual="#[payload]" expected='#[[&#10;    {&#10;        "Industry": null,&#10;        "Contacts": null,&#10;        "Id": "0015g000002YSB7AAO",&#10;        "type": "Account",&#10;        "AnnualRevenue": null,&#10;        "Name": "Pathang",&#10;        "AccountNumber": null&#10;    }&#10;]]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-test-suite-query-all-accounts-flowTest1" doc:id="87d1aa67-becb-46ba-a7a7-2276d464cc3a" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="2289f1d8-320d-4d2f-8d48-e6d9e647f0a2" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="8a591134-bac8-4607-b129-aef5f206005d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="SALESFORCE:CONNECTIVITY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="f76c1653-6c46-47ec-a4f1-cf6147d28e3d" >
+				<flow-ref doc:name="Flow-ref to query-all-accounts-flow" doc:id="6eaf29d3-303f-4045-b91a-c299896012d7" name="query-all-accounts-flow" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="243f23ad-16c6-46d0-a732-ad0aa11617eb" >
+						<logger level="INFO" doc:name="Logger" doc:id="076a43d9-17fb-4cdb-87d2-aeef9acc7a42" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation>
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="d05aff2e-2cd0-408f-b110-5e6051faee7c" actual="#[payload]" expected='#[{&#10;	statusCode: "500",&#10;	message: "CONNECTIVITY",&#10;	description: ""&#10;&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-test-suite-query-all-accounts-flowTest2" doc:id="32023456-8146-48b1-9104-40d45fe24a4a" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="2aa31493-1b58-4912-ba82-a6c2530eefc3" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="8a591134-bac8-4607-b129-aef5f206005d" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="SALESFORCE:INVALID_INPUT" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="963de1ae-8c15-4681-bbc9-7d2312900776" >
+				<flow-ref doc:name="Flow-ref to query-all-accounts-flow" doc:id="1cba6a5a-f413-455e-a535-6a5419e0095a" name="query-all-accounts-flow" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="aeb2e13c-575c-489f-8199-785141432d09" >
+						<logger level="INFO" doc:name="Logger" doc:id="19821f47-761e-40b9-93d4-997eb4f38227" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="bf7ded60-568b-4349-9cab-c0e364f3f08c" actual="#[payload]" expected='#[{&#10;	statusCode: "400",&#10;	message: "INVALID_INPUT",&#10;	description: ""&#10;&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-test-suite-query-all-accounts-flowTest3" doc:id="dd08f1db-f2fe-4a58-83e0-10ccb4180260" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="77c1ea02-8364-460f-8540-93a8d19e46b8" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Get All Accounts From Saelsforce Object" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="SALESFORCE:INVALID_RESPONSE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="0e5b924b-9019-4f90-bc8c-7aed1b045970" >
+				<flow-ref doc:name="Flow-ref to query-all-accounts-flow" doc:id="5a94c453-dc8a-41c0-9ffe-9212f1f5290b" name="query-all-accounts-flow" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="d3da7757-2a4d-4fdc-a870-186b8f3711cd" >
+						<logger level="INFO" doc:name="Logger" doc:id="b1a8f7b5-5f2e-458a-8ec4-819d14b1c809" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="c80673dd-0b2a-4833-8045-fcf2956c0563" actual="#[payload]" expected='#[{&#10;	statusCode: "502",&#10;	message: "INVALID_RESPONSE",&#10;	description: ""&#10;&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-test-suite-query-all-accounts-flowTest4" doc:id="45125ef2-7355-447b-aea9-3f6998c95f39" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="3d816d9f-8fc2-4fa4-8ebc-c3298c8e692a" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Get All Accounts From Saelsforce Object" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="SALESFORCE:LIMIT_EXCEEDED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="a759b7dc-3890-4a6d-a1e0-9dffc59fe3ea" >
+				<flow-ref doc:name="Flow-ref to query-all-accounts-flow" doc:id="bf766263-8a46-4460-b399-0eaab9c647c7" name="query-all-accounts-flow" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="71549382-cdd3-47c6-be3c-095159c712a3" >
+						<logger level="INFO" doc:name="Logger" doc:id="b16dc5cc-99d3-43a2-b366-06954f096756" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="7d61c211-b5fa-4d92-b88d-7e55322c43ab" actual="#[payload]" expected='#[{&#10;	statusCode: "429",&#10;	message: "LIMIT_EXCEEDED",&#10;	description: ""&#10;&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-test-suite-query-all-accounts-flowTest5" doc:id="03aca84c-f46c-49f2-9861-a79a2ff6decd" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="46ec25c5-5f66-4cfb-aa3a-6e7b880d4b65" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Get All Accounts From Saelsforce Object" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="SALESFORCE:MUTUAL_AUTHENTICATION_FAILED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="2662d4ed-1569-4bf2-a29d-2ec0598d4559" >
+				<flow-ref doc:name="Flow-ref to query-all-accounts-flow" doc:id="85e4947f-26bd-464b-9c1b-5089a58245d2" name="query-all-accounts-flow" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="84f0f27d-03f9-4002-a866-0debceabbf53" >
+						<logger level="INFO" doc:name="Logger" doc:id="a92e5fc5-994c-4f97-933c-46d7a64718eb" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="9f05a06f-e94f-409c-929f-424d649a5bd9" actual="#[payload]" expected='#[{&#10;	statusCode: "403",&#10;	message: "MUTUAL_AUTHENTICATION_FAILED",&#10;	description: ""&#10;&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-test-suite-query-all-accounts-flowTest6" doc:id="9801cbaa-172a-41c1-a011-acf9f33576b1" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="fbf91ea2-0a2c-4d75-85a0-5d1b775d8f4f" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Get All Accounts From Saelsforce Object" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="SALESFORCE:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="5c58fca9-36e5-4a4f-83fa-f313741c5c72" >
+				<flow-ref doc:name="Flow-ref to query-all-accounts-flow" doc:id="4d8b4d05-80b2-41ee-91b7-e774817ee006" name="query-all-accounts-flow" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="044f1ddb-1150-416f-b3be-d66b85868dc3" >
+						<logger level="INFO" doc:name="Logger" doc:id="ea91817c-1d5f-46f8-89f7-de5901ff554d" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="450e48a6-0b80-4526-a306-0845371cad85" actual="#[payload]" expected='#[{&#10;	statusCode: "404",&#10;	message: "NOT_FOUND",&#10;	description: ""&#10;&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="main-test-suite-query-all-accounts-flowTest7" doc:id="07e28133-2dc8-46c2-9b9a-92baf79079a1" description="Test">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="97b2dac9-6e47-4873-b960-66969833b8d6" processor="salesforce:query">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="Get All Accounts From Saelsforce Object" attributeName="doc:name" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="SALESFORCE:TIMEOUT" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution>
+			<try doc:name="Try" doc:id="4a78ea35-0ce6-417d-a6e6-259851813d18" >
+				<flow-ref doc:name="Flow-ref to query-all-accounts-flow" doc:id="b90dc80d-f141-47da-aa11-220caa6107a6" name="query-all-accounts-flow" />
+				<error-handler >
+					<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ca00caa9-c40a-4bb2-ab2e-6aff60d9282f" >
+						<logger level="INFO" doc:name="Logger" doc:id="bf7d9a55-18d8-49df-b12f-791d9fcc6ebb" />
+					</on-error-continue>
+				</error-handler>
+			</try>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="0329ca1d-92ab-4a8c-8678-a2097c06eb2a" actual="#[payload]" expected='#[{&#10;	statusCode: "504",&#10;	message: "TIMEOUT",&#10;	description: ""&#10;&#10;}]'/>
+		</munit:validation>
+	</munit:test>
+
+
+</mule>

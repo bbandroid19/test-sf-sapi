@@ -1,0 +1,12 @@
+    
+json:
+  logger:
+    application:   
+      environment: "dev"
+      
+tls:
+  keystore:
+    type: "pkcs12"
+    alias: "server"
+    path: "certs/apix-salesforce-sapi.p12"
+  

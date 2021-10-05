@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:json-logger="http://www.mulesoft.org/schema/mule/json-logger" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+  xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+  xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns="http://www.mulesoft.org/schema/mule/core"
+  xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/json-logger http://www.mulesoft.org/schema/mule/json-logger/current/mule-json-logger.xsd">
+  <flow name="query-all-accounts-flow" doc:id="200c86ea-c407-497b-9117-c5eea8581ead">
+    <json-logger:logger doc:name="Begining Logger" doc:id="59a3d25b-2759-4a38-8e2e-8dff1c815254"
+      config-ref="apiJsonLoggerConfig" message="Before Tranform"/>
+    <salesforce:query doc:name="Get All Accounts From Saelsforce Object" doc:id="8a591134-bac8-4607-b129-aef5f206005d"
+      config-ref="salesforceConfig">
+      <salesforce:salesforce-query><![CDATA[SELECT Account.Id, Account.Name, Account.AccountNumber, Account.Industry, Account.AnnualRevenue, (SELECT Contact.FirstName, Contact.LastName, Contact.Title, Contact.Email, Contact.Phone FROM
+Account.Contacts)
+FROM Account]]></salesforce:salesforce-query>
+    </salesforce:query>
+    <ee:transform doc:name="Payload to Json" doc:id="ba18227a-9c95-4247-89e8-22da139df208">
+      <ee:message>
+        <ee:set-payload resource="dwl/all-account-payload.dwl" />
+      </ee:message>
+    </ee:transform>
+    <json-logger:logger doc:name="Ending Logger" doc:id="fa08a859-8202-48c2-a4b0-ac4a9683eebe"
+      config-ref="apiJsonLoggerConfig" message=" After Transform" tracePoint="END"/>
+    <error-handler ref="connector-error-handler"/>
+  </flow>
+  <flow name="query-account-by-id-flow" doc:id="dc12bcd9-a137-4508-a61c-e0175de84856">
+    <json-logger:logger doc:name="Begining Logger" doc:id="a04b162d-95ca-40b9-9327-8ad6fefce41c"
+      config-ref="apiJsonLoggerConfig" message="Before Cache"/>
+    <salesforce:query doc:name="Get Account By Account Id" doc:id="2c13a8db-5451-40d3-8425-609bd43c6beb" config-ref="salesforceConfig">
+        <salesforce:salesforce-query><![CDATA[SELECT Account.Id, Account.Name, Account.AccountNumber, Account.Industry, Account.AnnualRevenue, (SELECT Contact.FirstName, Contact.LastName, Contact.Title, Contact.Email, Contact.Phone FROM
+			Account.Contacts)
+			FROM Account WHERE Account.Id = ':account-id']]></salesforce:salesforce-query>
+        <salesforce:parameters><![CDATA[#[output application/java
+---
+{
+	"account-id" : vars.'accountId'
+}]]]></salesforce:parameters>
+      </salesforce:query>
+    <set-payload value="#[%dw 2.0&#10;output application/json&#10;---&#10;payload]" doc:name="Payload to Json" doc:id="d6545f65-ae08-42fd-97f4-99eed156aecd" />
+    <json-logger:logger doc:name="Ending Logger" doc:id="75f105c5-8b34-4163-bfe8-e70e8ce29ef4"
+      config-ref="apiJsonLoggerConfig" message="After Transform" tracePoint="END"/>
+    <error-handler ref="connector-error-handler"/>
+  </flow>
+</mule>

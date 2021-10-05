@@ -1,0 +1,10 @@
+salesforce:
+  username: "![en34s2s4uxa4QoJkgCnnPmzXDAVLLYYnS4qQbYwK99s=]"
+  password: "![mGHChznYKuFihN2Aj+Snrg==]"
+  securitytoken: "![GKXHUcEwh8WvxuVLcYl8djfpC70ptaM+EGiHc4AfmXU=]"
+
+
+      
+tls:
+  keystore:
+    password: "![TjrgNiKb/sw=]"
